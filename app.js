@@ -11,6 +11,8 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+const db = firebase.firestore();
+
 // Reference to auth method of Firebase
 const auth = firebase.auth();
 
@@ -28,8 +30,6 @@ const closeButton = document.getElementById('close');
 closeButton.addEventListener('click', () => {
     modal.style.display = 'none';
 });
-
-let uid;
 
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -51,6 +51,15 @@ auth.onAuthStateChanged(user => {
             console.log(user.displayName)
             document.getElementById('display-name-header').textContent = `Hello, ${user.displayName}`
         }
+        db.collection('to-do-lists').doc(uid).collection('my-list')
+		.onSnapshot(snapshot => {
+			document.getElementById('to-do-list-items').innerHTML = '';
+			snapshot.forEach(element => {
+				let p = document.createElement('p');
+				p.textContent = element.data().item;
+				document.getElementById('to-do-list-items').appendChild(p);
+			});
+		});
 
     } else {
         // Everything inside here happens if user is not signed in
@@ -240,31 +249,18 @@ loading = (action) => {
     }
 }
 
-db.collection('to-do-lists').doc(uid).collection('my-list')
-		.onSnapshot(snapshot => {
-			document.getElementById('to-do-list-items').innerHTML = '';
-			// loop throug all document in the my-list collection
-			snapshot.forEach(element => {
-				// creat a paragraph for each item
-				let p = document.createElement('p');
-				// fill the paragrahp with the text of the to-do
-				p.textContent = element.data().item;
-				// append the paragraph as they are made to the DOM using the element 'to-do-list-items'
-				document.getElementById('to-do-list-items').appendChild(p);
-			});
-        });
-        
 // Get the to do list form for item submissions
 const toDoListForm = document.getElementById('to-do-list-form');
 
 // Add to-do item submit event
 toDoListForm.addEventListener('submit', event => {
-	event.preventDefault()
-	// Send value to Firebase
-	db.collection('to-do-lists').doc(uid).collection('my-list').add({
-		// Grab value from from form
-		item: document.getElementById('item').value,
-	});
-	// reset form
-	toDoListForm.reset()
+    console.log("Added item!")
+    event.preventDefault()
+    // Send value to Firebase
+    db.collection('to-do-lists').doc(uid).collection('my-list').add({
+        // Grab value from from form
+        item: document.getElementById('item').value,
+    });
+    // reset form
+    toDoListForm.reset()
 });
