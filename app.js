@@ -56,7 +56,13 @@ auth.onAuthStateChanged(user => {
 			document.getElementById('to-do-list-items').innerHTML = '';
 			snapshot.forEach(element => {
 				let p = document.createElement('p');
-				p.textContent = element.data().item;
+                p.textContent = element.data().item;
+                let deleteButton = document.createElement('button');
+				deleteButton.textContent = 'x';
+				deleteButton.classList.add('delete-button');
+				deleteButton.setAttribute('data', element.id);
+				p.appendChild(deleteButton);
+				document.getElementById('to-do-list-items').appendChild(p);
 				document.getElementById('to-do-list-items').appendChild(p);
 			});
 		});
@@ -263,4 +269,12 @@ toDoListForm.addEventListener('submit', event => {
     });
     // reset form
     toDoListForm.reset()
+});
+
+// Delete a to do list item
+document.body.addEventListener('click', event => {
+	if (event.target.matches('.delete-button')) {
+		key = event.target.getAttribute('data');
+		db.collection('to-do-lists').doc(uid).collection('my-list').doc(key).delete();
+	};
 });

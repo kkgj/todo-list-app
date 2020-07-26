@@ -371,3 +371,7 @@ input:focus{
     max-width: 150px;
     margin-top: 30px;
 }
+
+.delete-button{
+	margin-left: 20px;
+}
