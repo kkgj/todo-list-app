@@ -1,3 +1,13 @@
+// Database rules
+// rules_version = '2';
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+//     match /to-do-lists/{listUID}/{document=**}{
+//      allow read, write: if request.auth.uid == listUID
+//     }
+//   }
+// }
+
 var firebaseConfig = {
     apiKey: "AIzaSyACkYvm8t9vAscandf08M14DWcpSMXtOZA",
     authDomain: "chat-app--desktop-version.firebaseapp.com",
